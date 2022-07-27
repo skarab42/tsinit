@@ -1,6 +1,8 @@
 {
-  "include": ["src"],
+  "include": ["src", "bin"],
+  "exclude": ["lib"],
   "compilerOptions": {
+    "strict": true,
     "target": "es2015",
     "module": "commonjs",
     "esModuleInterop": true
