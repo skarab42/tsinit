@@ -11,6 +11,10 @@ function cleanPath(path) {
   return path;
 }
 
-const filePath = init(cleanPath(process.argv[2]), process.argv.includes('--overwrite'));
+const filePath = init({
+  filePath: cleanPath(process.argv[2]),
+  overwrite: process.argv.includes('--overwrite'),
+  commentAll: process.argv.includes('--comment-all'),
+});
 
 console.log('FILE:', resolve(filePath));

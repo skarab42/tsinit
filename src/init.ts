@@ -1,7 +1,6 @@
 import ts from 'unleashed-typescript';
 import { existsSync, writeFileSync } from 'node:fs';
 
-export const defaultFilePath = 'tsconfig.tsinit.json';
 export const categoriesToSkip = [ts.Diagnostics.Command_line_Options];
 
 export type OptionWithCategoryAndDescription = ts.CommandLineOption & {
@@ -25,6 +24,12 @@ export interface DefaultOption {
 
 export type DefaultOptionValue = string | number | boolean | undefined | object | unknown[];
 
+export interface InitOptions {
+  filePath?: string;
+  overwrite?: boolean;
+  commentAll?: boolean;
+}
+
 export function isCommandLineOptionWithCategory(
   option: ts.CommandLineOption,
 ): option is OptionWithCategoryAndDescription {
@@ -35,15 +40,17 @@ export function shouldSkipOptionName(option: OptionWithCategoryAndDescription): 
   return categoriesToSkip.includes(option.category) || !!option.description.key.startsWith('Deprecated');
 }
 
-export function init(filePath = defaultFilePath, overwrite = false): string {
-  if (!overwrite && existsSync(filePath)) {
+export function init(options: InitOptions = {}): string {
+  const filePath = options.filePath ?? 'tsconfig.tsinit.json';
+
+  if (!options.overwrite && existsSync(filePath)) {
     throw new Error(
       `WARNING: file "${filePath}" already exists! If you want to overwrite it use the "--overwrite" option.`,
     );
   }
 
   const categories = getOptionGroupedByCategory();
-  const output = createConfigurationFileContents(categories);
+  const output = createConfigurationFileContents(categories, !!options.commentAll);
 
   writeFileSync(filePath, output);
 
@@ -132,7 +139,7 @@ export function getDefaultOption(option: OptionWithCategoryAndDescription): Defa
   return { type, description, value, defaultValue };
 }
 
-export function createConfigurationFileContents(categories: OptionCategories): string {
+export function createConfigurationFileContents(categories: OptionCategories, commentAll: boolean): string {
   const lines: string[] = [];
 
   function push(line: string, indent = 0): void {
@@ -155,7 +162,7 @@ export function createConfigurationFileContents(categories: OptionCategories): s
       const defaultValue = JSON.stringify(defaultOption.defaultValue);
       const description = `${defaultOption.description} (default: ${defaultValue})`;
 
-      const leftSide = `"${option.name}": ${value},`;
+      const leftSide = `${commentAll ? '// ' : ''}"${option.name}": ${value},`;
       maxLength = Math.max(maxLength, leftSide.length);
 
       output.push([leftSide, `// ${description}`]);

@@ -13,5 +13,9 @@ pnpm add -D typescript @skarab/tsinit
 ## Usage
 
 ```bash
-pnpm tsinit [filename] [--overwrite]
+pnpm tsinit [filename] [options]
+
+Options:
+  --overwrite
+  --comment-all
 ```
