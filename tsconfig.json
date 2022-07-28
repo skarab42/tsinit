@@ -1,12 +1,8 @@
 {
+  "extends": "@skarab/typescript-config/tsconfig.node14",
   "include": ["src", "bin"],
   "exclude": ["lib"],
   "compilerOptions": {
-    "strict": true,
-    "target": "esnext",
-    "module": "esnext",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node"
+    "outDir": "lib"
   }
 }

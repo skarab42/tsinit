@@ -1,7 +1,7 @@
 import ts from 'unleashed-typescript';
 import { existsSync, writeFileSync } from 'node:fs';
 
-export const categoriesToSkip = [ts.Diagnostics.Command_line_Options];
+export const categoriesToSkip = [ts.Diagnostics['Command_line_Options']];
 
 export type OptionWithCategoryAndDescription = ts.CommandLineOption & {
   category: ts.DiagnosticMessage;
@@ -152,7 +152,7 @@ export function createConfigurationFileContents(categories: OptionCategories, co
   for (const { name, options } of categories.values()) {
     push(`/** ${name} */`, 2);
 
-    const output: string[][] = [];
+    const output: { left: string; right: string }[] = [];
 
     let maxLength = 0;
 
@@ -162,14 +162,14 @@ export function createConfigurationFileContents(categories: OptionCategories, co
       const defaultValue = JSON.stringify(defaultOption.defaultValue);
       const description = `${defaultOption.description} (default: ${defaultValue})`;
 
-      const leftSide = `${commentAll ? '// ' : ''}"${option.name}": ${value},`;
-      maxLength = Math.max(maxLength, leftSide.length);
+      const left = `${commentAll ? '// ' : ''}"${option.name}": ${value},`;
+      maxLength = Math.max(maxLength, left.length);
 
-      output.push([leftSide, `// ${description}`]);
+      output.push({ left, right: `// ${description}` });
     }
 
-    for (const [a, b] of output) {
-      push(`${a.padEnd(maxLength + 1)}${b}`, 2);
+    for (const line of output) {
+      push(`${line.left.padEnd(maxLength + 1)}${line.right}`, 2);
     }
 
     push('', 2);

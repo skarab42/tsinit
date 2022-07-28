@@ -42,8 +42,9 @@
     "unleashed-typescript": "^1.3.0"
   },
   "devDependencies": {
-    "@skarab/eslint-config": "^1.0.2",
+    "@skarab/eslint-config": "^1.1.0",
     "@skarab/prettier-config": "^1.2.2",
+    "@skarab/typescript-config": "^1.0.0",
     "@types/node": "^18.6.2",
     "eslint": "^8.20.0",
     "lint-staged": "^13.0.3",
