@@ -1,0 +1,131 @@
+{
+  "compilerOptions": {
+    /** Output Formatting */
+    "preserveWatchOutput": false, // Disable wiping the console in watch mode. (default: false)
+    "pretty": true, // Enable color and formatting in TypeScript's output to make compiler errors easier to read. (default: true)
+    "noErrorTruncation": false, // Disable truncating types in error messages. (default: false)
+
+    /** Compiler Diagnostics */
+    "listFiles": false, // Print all of the files read during the compilation. (default: false)
+    "explainFiles": false, // Print files read during the compilation including why it was included. (default: false)
+    "listEmittedFiles": false, // Print the names of emitted files after a compilation. (default: false)
+    "traceResolution": false, // Log paths used during the 'moduleResolution' process. (default: false)
+    "diagnostics": false, // Output compiler performance information after building. (default: false)
+    "extendedDiagnostics": false, // Output more detailed compiler performance information after building. (default: false)
+    "generateCpuProfile": "./profile.cpuprofile", // Emit a v8 CPU profile of the compiler run for debugging. (default: "./profile.cpuprofile")
+    "generateTrace": "", // Generates an event trace and a list of types. (default: "")
+
+    /** Projects */
+    "incremental": false, // Save .tsbuildinfo files to allow for incremental compilation of projects. (default: "`false`, unless `composite` is set")
+    "composite": false, // Enable constraints that allow a TypeScript project to be used with project references. (default: false)
+    "tsBuildInfoFile": "./.tsbuildinfo", // Specify the path to .tsbuildinfo incremental compilation file. (default: "./.tsbuildinfo")
+    "disableSourceOfProjectReferenceRedirect": false, // Disable preferring source files instead of declaration files when referencing composite projects. (default: false)
+    "disableSolutionSearching": false, // Opt a project out of multi-project reference checking when editing. (default: false)
+    "disableReferencedProjectLoad": false, // Reduce the number of projects loaded automatically by TypeScript. (default: false)
+
+    /** Watch and Build Modes */
+    "assumeChangesOnlyAffectDirectDependencies": false, // Have recompiles in projects that use 'incremental' and 'watch' mode assume that changes within a file will only affect files directly depending on it. (default: false)
+
+    /** Language and Environment */
+    "target": "es3", // Set the JavaScript language version for emitted JavaScript and include compatible library declarations. (default: "es3")
+    "lib": [], // Specify a set of bundled library declaration files that describe the target runtime environment. (default: [])
+    "jsx": "preserve", // Specify what JSX code is generated. (default: "preserve")
+    "experimentalDecorators": false, // Enable experimental support for TC39 stage 2 draft decorators. (default: false)
+    "emitDecoratorMetadata": false, // Emit design-type metadata for decorated declarations in source files. (default: false)
+    "jsxFactory": "React.createElement", // Specify the JSX factory function used when targeting React JSX emit, e.g. 'React.createElement' or 'h'. (default: "React.createElement")
+    "jsxFragmentFactory": "React.Fragment", // Specify the JSX Fragment reference used for fragments when targeting React JSX emit e.g. 'React.Fragment' or 'Fragment'. (default: "React.Fragment")
+    "jsxImportSource": "react", // Specify module specifier used to import the JSX factory functions when using 'jsx: react-jsx*'. (default: "react")
+    "reactNamespace": "React", // Specify the object invoked for 'createElement'. This only applies when targeting 'react' JSX emit. (default: "React")
+    "noLib": false, // Disable including any library files, including the default lib.d.ts. (default: false)
+    "useDefineForClassFields": false, // Emit ECMAScript-standard-compliant class fields. (default: "`true` for ES2022 and above, including ESNext.")
+    "moduleDetection": "auto", // Control what method is used to detect module-format JS files. (default: "auto")
+
+    /** Modules */
+    "module": "none", // Specify what module code is generated. (default: "none")
+    "rootDir": "", // Specify the root folder within your source files. (default: "Computed from the list of input files")
+    "moduleResolution": "node", // Specify how TypeScript looks up a file from a given module specifier. (default: "node")
+    "baseUrl": "", // Specify the base directory to resolve non-relative module names. (default: "")
+    "paths": {}, // Specify a set of entries that re-map imports to additional lookup locations. (default: {})
+    "rootDirs": [], // Allow multiple folders to be treated as one when resolving modules. (default: "Computed from the list of input files")
+    "typeRoots": [], // Specify multiple folders that act like './node_modules/@types'. (default: [])
+    "types": [], // Specify type package names to be included without being referenced in a source file. (default: [])
+    "allowUmdGlobalAccess": false, // Allow accessing UMD globals from modules. (default: false)
+    "moduleSuffixes": [], // List of file name suffixes to search when resolving a module. (default: [])
+    "resolveJsonModule": false, // Enable importing .json files. (default: false)
+    "noResolve": false, // Disallow 'import's, 'require's or '<reference>'s from expanding the number of files TypeScript should add to a project. (default: false)
+
+    /** JavaScript Support */
+    "allowJs": false, // Allow JavaScript files to be a part of your program. Use the 'checkJS' option to get errors from these files. (default: false)
+    "checkJs": false, // Enable error reporting in type-checked JavaScript files. (default: false)
+    "maxNodeModuleJsDepth": 0, // Specify the maximum folder depth used for checking JavaScript files from 'node_modules'. Only applicable with 'allowJs'. (default: 0)
+
+    /** Emit */
+    "declaration": false, // Generate .d.ts files from TypeScript and JavaScript files in your project. (default: "`false`, unless `composite` is set")
+    "declarationMap": false, // Create sourcemaps for d.ts files. (default: false)
+    "emitDeclarationOnly": false, // Only output d.ts files and not JavaScript files. (default: false)
+    "sourceMap": false, // Create source map files for emitted JavaScript files. (default: false)
+    "outFile": "", // Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. (default: "")
+    "outDir": "", // Specify an output folder for all emitted files. (default: "")
+    "removeComments": false, // Disable emitting comments. (default: false)
+    "noEmit": false, // Disable emitting files from a compilation. (default: false)
+    "importHelpers": false, // Allow importing helper functions from tslib once per project, instead of including them per-file. (default: false)
+    "importsNotUsedAsValues": "remove", // Specify emit/checking behavior for imports that are only used for types. (default: "remove")
+    "downlevelIteration": false, // Emit more compliant, but verbose and less performant JavaScript for iteration. (default: false)
+    "sourceRoot": "", // Specify the root path for debuggers to find the reference source code. (default: "")
+    "mapRoot": "", // Specify the location where debugger should locate map files instead of generated locations. (default: "")
+    "inlineSourceMap": false, // Include sourcemap files inside the emitted JavaScript. (default: false)
+    "inlineSources": false, // Include source code in the sourcemaps inside the emitted JavaScript. (default: false)
+    "emitBOM": false, // Emit a UTF-8 Byte Order Mark (BOM) in the beginning of output files. (default: false)
+    "newLine": "crlf", // Set the newline character for emitting files. (default: "crlf")
+    "stripInternal": false, // Disable emitting declarations that have '@internal' in their JSDoc comments. (default: false)
+    "noEmitHelpers": false, // Disable generating custom helper functions like '__extends' in compiled output. (default: false)
+    "noEmitOnError": false, // Disable emitting files if any type checking errors are reported. (default: false)
+    "preserveConstEnums": false, // Disable erasing 'const enum' declarations in generated code. (default: false)
+    "declarationDir": "", // Specify the output directory for generated declaration files. (default: "")
+    "preserveValueImports": false, // Preserve unused imported values in the JavaScript output that would otherwise be removed. (default: false)
+
+    /** Interop Constraints */
+    "isolatedModules": false, // Ensure that each file can be safely transpiled without relying on other imports. (default: false)
+    "allowSyntheticDefaultImports": false, // Allow 'import x from y' when a module doesn't have a default export. (default: "module === \"system\" or esModuleInterop")
+    "esModuleInterop": false, // Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. (default: false)
+    "preserveSymlinks": false, // Disable resolving symlinks to their realpath. This correlates to the same flag in node. (default: false)
+    "forceConsistentCasingInFileNames": false, // Ensure that casing is correct in imports. (default: false)
+
+    /** Type Checking */
+    "strict": false, // Enable all strict type-checking options. (default: false)
+    "noImplicitAny": false, // Enable error reporting for expressions and declarations with an implied 'any' type. (default: "`false`, unless `strict` is set")
+    "strictNullChecks": false, // When type checking, take into account 'null' and 'undefined'. (default: "`false`, unless `strict` is set")
+    "strictFunctionTypes": false, // When assigning functions, check to ensure parameters and the return values are subtype-compatible. (default: "`false`, unless `strict` is set")
+    "strictBindCallApply": false, // Check that the arguments for 'bind', 'call', and 'apply' methods match the original function. (default: "`false`, unless `strict` is set")
+    "strictPropertyInitialization": false, // Check for class properties that are declared but not set in the constructor. (default: "`false`, unless `strict` is set")
+    "noImplicitThis": false, // Enable error reporting when 'this' is given the type 'any'. (default: "`false`, unless `strict` is set")
+    "useUnknownInCatchVariables": false, // Default catch clause variables as 'unknown' instead of 'any'. (default: false)
+    "alwaysStrict": false, // Ensure 'use strict' is always emitted. (default: "`false`, unless `strict` is set")
+    "noUnusedLocals": false, // Enable error reporting when local variables aren't read. (default: false)
+    "noUnusedParameters": false, // Raise an error when a function parameter isn't read. (default: false)
+    "exactOptionalPropertyTypes": false, // Interpret optional property types as written, rather than adding 'undefined'. (default: false)
+    "noImplicitReturns": false, // Enable error reporting for codepaths that do not explicitly return in a function. (default: false)
+    "noFallthroughCasesInSwitch": false, // Enable error reporting for fallthrough cases in switch statements. (default: false)
+    "noUncheckedIndexedAccess": false, // Add 'undefined' to a type when accessed using an index. (default: false)
+    "noImplicitOverride": false, // Ensure overriding members in derived classes are marked with an override modifier. (default: false)
+    "noPropertyAccessFromIndexSignature": false, // Enforces using indexed accessors for keys declared using an indexed type. (default: false)
+    "allowUnusedLabels": false, // Disable error reporting for unused labels. (default: false)
+    "allowUnreachableCode": false, // Disable error reporting for unreachable code. (default: false)
+
+    /** Completeness */
+    "skipDefaultLibCheck": false, // Skip type checking .d.ts files that are included with TypeScript. (default: false)
+    "skipLibCheck": false, // Skip type checking all .d.ts files. (default: false)
+
+    /** Backwards Compatibility */
+    "charset": "utf8", // No longer supported. In early versions, manually set the text encoding for reading files. (default: "utf8")
+    "noImplicitUseStrict": false, // Disable adding 'use strict' directives in emitted JavaScript files. (default: false)
+    "suppressExcessPropertyErrors": false, // Disable reporting of excess property errors during the creation of object literals. (default: false)
+    "suppressImplicitAnyIndexErrors": false, // Suppress 'noImplicitAny' errors when indexing objects that lack index signatures. (default: false)
+    "noStrictGenericChecks": false, // Disable strict checking of generic signatures in function types. (default: false)
+    "keyofStringsOnly": false, // Make keyof only return strings instead of string, numbers or symbols. Legacy option. (default: false)
+
+    /** Editor Support */
+    "disableSizeLimit": false, // Remove the 20mb cap on total source code size for JavaScript files in the TypeScript language server. (default: false)
+    "plugins": [] // Specify a list of language service plugins to include. (default: [])
+  }
+}

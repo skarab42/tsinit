@@ -1,19 +1,16 @@
 #!/usr/bin/env node
-const { resolve } = require('path');
-const { init } = require('../lib/init');
+/* eslint-disable no-console */
+import { resolve } from 'node:path';
+import { init } from '../lib/init.js';
 
 function cleanPath(path) {
   if (typeof path !== 'string' || path.startsWith('-')) {
-    return undefined;
+    return;
   }
 
   return path;
 }
 
-try {
-  const filePath = init(cleanPath(process.argv[2]), process.argv.includes('--overwrite'));
-  console.log('FILE:', resolve(filePath));
-} catch (error) {
-  console.error(error.message);
-  process.exit(1);
-}
+const filePath = init(cleanPath(process.argv[2]), process.argv.includes('--overwrite'));
+
+console.log('FILE:', resolve(filePath));

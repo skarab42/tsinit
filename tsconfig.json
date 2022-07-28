@@ -3,8 +3,10 @@
   "exclude": ["lib"],
   "compilerOptions": {
     "strict": true,
-    "target": "es2015",
-    "module": "commonjs",
-    "esModuleInterop": true
+    "target": "esnext",
+    "module": "esnext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   }
 }

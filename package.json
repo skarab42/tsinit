@@ -14,16 +14,9 @@
   "bugs": "https://github.com/skarab42/tsconfig/issues",
   "funding": "https://github.com/sponsors/skarab42",
   "license": "MIT",
-  "main": "./lib/init.js",
-  "module": "./lib/init.mjs",
+  "type": "module",
+  "module": "./lib/init.js",
   "types": "./lib/init.d.ts",
-  "exports": {
-    ".": {
-      "require": "./lib/init.js",
-      "import": "./lib/init.mjs",
-      "types": "./lib/init.d.ts"
-    }
-  },
   "bin": {
     "tsi": "./bin/init.js",
     "tsinit": "./bin/init.js"
@@ -33,11 +26,11 @@
     "lib"
   ],
   "scripts": {
-    "build": "tsup",
     "prepare": "npx simple-git-hooks",
+    "build": "tsc -p tsconfig.build.json",
+    "tsinit": "pnpm build && node ./bin/init.js",
     "lint": "eslint ./src --fix --max-warnings=0",
-    "format": "prettier **/* --write --cache --ignore-unknown",
-    "tsinit": "pnpm build && node ./bin/init.js"
+    "format": "prettier **/* --write --cache --ignore-unknown"
   },
   "keywords": [
     "typescript",
@@ -46,16 +39,18 @@
     "init"
   ],
   "prettier": "@skarab/prettier-config",
+  "dependencies": {
+    "unleashed-typescript": "^1.3.0"
+  },
   "devDependencies": {
-    "@skarab/eslint-config": "^1.0.0",
-    "@skarab/prettier-config": "^1.1.1",
-    "@types/node": "^18.0.6",
+    "@skarab/eslint-config": "^1.0.2",
+    "@skarab/prettier-config": "^1.2.2",
+    "@types/node": "^18.6.2",
     "eslint": "^8.20.0",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
     "simple-git-hooks": "^2.8.0",
     "ts-node": "^10.9.1",
-    "tsup": "^6.1.3",
     "typescript": "^4.7.4"
   },
   "peerDependencies": {

@@ -1,117 +1,87 @@
-import { existsSync, writeFileSync } from 'fs';
-import ts from 'typescript';
+import ts from 'unleashed-typescript';
+import { existsSync, writeFileSync } from 'node:fs';
 
-export const DEFAULT_FILENAME = 'tsconfig.tsinit.json';
-
-export type OptionCategory = {
-  key: string;
-  message: string;
-};
-
-export type OptionDescription = {
-  key: string;
-  message: string;
-};
-
-export type OptionValue = string | number | boolean | undefined | Array<unknown> | Record<string, unknown>;
-
-export type OptionValueWithMessage = { message: string };
-
-export type Option = {
-  name: string;
-  type: string | Map<string, number>;
-  isFilePath: boolean;
-  category: OptionCategory;
-  description: OptionDescription;
-  transpileOptionValue: OptionValue | OptionValueWithMessage;
-  defaultValueDescription: OptionValue | OptionValueWithMessage;
-};
-
-export type OptionsNameMap = { optionsNameMap: Map<string, Option> };
-export type OptionsCategory = { name: string; options: Option[] };
-
-// @ts-expect-error access to internal API
+export const defaultFilePath = 'tsconfig.tsinit.json';
 export const categoriesToSkip = [ts.Diagnostics.Command_line_Options];
 
-export function shouldSkip(option: Option) {
-  return (
-    !option.category || categoriesToSkip.includes(option.category) || option.description.key.startsWith('Deprecated')
-  );
+type OptionWithCategoryAndDescription = ts.CommandLineOption & {
+  category: ts.DiagnosticMessage;
+  description: ts.DiagnosticMessage;
+};
+
+export interface OptionsCategory {
+  name: string;
+  options: OptionWithCategoryAndDescription[];
 }
 
-export function init(filePath = DEFAULT_FILENAME, overwrite = false) {
+type OptionCategories = Map<string, OptionsCategory>;
+
+interface DefaultOption {
+  type: string;
+  description: string;
+  value: unknown;
+  defaultValue: unknown;
+}
+
+type DefaultOptionValue = string | number | boolean | undefined | object | unknown[];
+
+export function isCommandLineOptionWithCategory(
+  option: ts.CommandLineOption,
+): option is OptionWithCategoryAndDescription {
+  return !!option.category && !!option.description;
+}
+
+export function shouldSkipOptionName(option: OptionWithCategoryAndDescription): boolean {
+  return categoriesToSkip.includes(option.category) || !!option.description.key.startsWith('Deprecated');
+}
+
+export function init(filePath = defaultFilePath, overwrite = false): string {
   if (!overwrite && existsSync(filePath)) {
     throw new Error(
       `WARNING: file "${filePath}" already exists! If you want to overwrite it use the "--overwrite" option.`,
     );
   }
 
-  // @ts-expect-error access to internal API
-  const { optionsNameMap }: OptionsNameMap = ts.getOptionsNameMap();
-  const categories: Map<string, OptionsCategory> = new Map();
+  const categories = getOptionGroupedByCategory();
+  const output = createConfigurationFileContents(categories);
 
-  optionsNameMap.forEach((option) => {
-    if (shouldSkip(option)) {
+  writeFileSync(filePath, output);
+
+  return '';
+}
+
+export function getOptionGroupedByCategory(): OptionCategories {
+  const { optionsNameMap } = ts.getOptionsNameMap();
+  const categories: OptionCategories = new Map();
+
+  // eslint-disable-next-line unicorn/no-array-for-each
+  optionsNameMap.forEach((optionName) => {
+    if (!isCommandLineOptionWithCategory(optionName)) {
       return;
     }
 
-    const category = categories.get(option.category.key);
+    if (shouldSkipOptionName(optionName)) {
+      return;
+    }
+
+    const category = categories.get(optionName.category.key);
 
     if (!category) {
-      categories.set(option.category.key, {
-        name: option.category.message,
-        options: [option],
+      categories.set(optionName.category.key, {
+        name: optionName.category.message,
+        options: [optionName],
       });
-    } else {
-      category.options = [...category.options, option];
+
+      return;
     }
+
+    category.options = [...category.options, optionName];
   });
 
-  const lines: string[] = [];
-
-  function push(line: string, indent = 0) {
-    lines.push('  '.repeat(indent) + line);
-  }
-
-  push(`{`);
-  push(`"compilerOptions": {`, 1);
-
-  [...categories.values()].forEach(({ name, options }) => {
-    push(`/** ${name} */`, 2);
-
-    const output: string[][] = [];
-    let maxLength = 0;
-
-    options.forEach((option) => {
-      const defaultValue = getDefaultValue(option);
-      const value = JSON.stringify(defaultValue.value);
-      const description = `${option.description['message']} (default: ${value ?? defaultValue.description})`;
-      if (!value) {
-        console.log(option);
-      }
-      const comment = value ? '' : '// ';
-      const leftSide = `${comment}"${option.name}": ${value},`;
-      const rightSide = `// ${description}`;
-      maxLength = Math.max(maxLength, leftSide.length);
-      output.push([leftSide, rightSide]);
-    });
-
-    output.forEach(([a, b]) => {
-      push(`${a?.padEnd(maxLength + 1)}${b}`, 2);
-    });
-
-    push('', 2);
-  });
-
-  push(`}`, 1);
-  push(`}`);
-
-  writeFileSync(filePath, lines.join('\n'));
-
-  return filePath;
+  return categories;
 }
 
-export function getDefaultEmptyValue(option: Option): OptionValue {
+export function getDefaultOptionValue(option: OptionWithCategoryAndDescription): DefaultOptionValue {
   switch (option.type) {
     case 'number':
       return 1;
@@ -128,35 +98,78 @@ export function getDefaultEmptyValue(option: Option): OptionValue {
   }
 }
 
-export function getDefaultValue(option: Option): {
-  value: unknown;
-  description: string;
-} {
-  switch (option.type) {
-    case 'number':
-    case 'boolean':
-    case 'string':
-      let description = '';
-      let value = option.defaultValueDescription;
-      if (typeof value === 'string') {
-        value = value.replace(/^`|`$/g, '');
-        if (option.isFilePath) {
-          value = `./${value}`;
-        }
-      } else if (typeof value === 'object') {
-        description = (value as OptionValueWithMessage).message;
-        value = getDefaultEmptyValue(option);
+export function getDefaultOption(option: OptionWithCategoryAndDescription): DefaultOption {
+  const type = typeof option.type !== 'string' ? 'Map' : option.type;
+  const description = option.description.message;
+
+  let value: DefaultOptionValue;
+  let defaultValue: DefaultOptionValue;
+
+  if (type === 'Map') {
+    value = [...(option.type as Map<string, number>).keys()][0];
+  } else if (typeof option.defaultValueDescription === 'object') {
+    defaultValue = option.defaultValueDescription.message;
+  } else {
+    value = option.defaultValueDescription;
+
+    if (typeof value === 'string') {
+      value = value.replace(/^`|`$/g, '');
+
+      if (option.isFilePath) {
+        value = `./${value}`;
       }
-      value = value ?? getDefaultEmptyValue(option);
-      return { value, description };
-    case 'list':
-      return { value: [], description: '' };
-    case 'object':
-      return { value: {}, description: '' };
-    default:
-      return {
-        value: [...(option.type as Map<string, number>).keys()].pop(),
-        description: '',
-      };
+    }
+
+    defaultValue = value;
   }
+
+  if (typeof value === 'undefined') {
+    value = getDefaultOptionValue(option);
+  }
+
+  defaultValue = defaultValue ?? value;
+
+  return { type, description, value, defaultValue };
+}
+
+export function createConfigurationFileContents(categories: OptionCategories): string {
+  const lines: string[] = [];
+
+  function push(line: string, indent = 0): void {
+    lines.push('  '.repeat(indent) + line);
+  }
+
+  push(`{`);
+  push(`"compilerOptions": {`, 1);
+
+  for (const { name, options } of categories.values()) {
+    push(`/** ${name} */`, 2);
+
+    const output: string[][] = [];
+
+    let maxLength = 0;
+
+    for (const option of options) {
+      const defaultOption = getDefaultOption(option);
+      const value = JSON.stringify(defaultOption.value);
+      const defaultValue = JSON.stringify(defaultOption.defaultValue);
+      const description = `${defaultOption.description} (default: ${defaultValue})`;
+
+      const leftSide = `"${option.name}": ${value},`;
+      maxLength = Math.max(maxLength, leftSide.length);
+
+      output.push([leftSide, `// ${description}`]);
+    }
+
+    for (const [a, b] of output) {
+      push(`${a.padEnd(maxLength + 1)}${b}`, 2);
+    }
+
+    push('', 2);
+  }
+
+  push(`}`, 1);
+  push(`}`);
+
+  return lines.join('\n');
 }
