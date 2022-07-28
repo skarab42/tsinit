@@ -4,7 +4,7 @@ import { existsSync, writeFileSync } from 'node:fs';
 export const defaultFilePath = 'tsconfig.tsinit.json';
 export const categoriesToSkip = [ts.Diagnostics.Command_line_Options];
 
-type OptionWithCategoryAndDescription = ts.CommandLineOption & {
+export type OptionWithCategoryAndDescription = ts.CommandLineOption & {
   category: ts.DiagnosticMessage;
   description: ts.DiagnosticMessage;
 };
@@ -14,16 +14,16 @@ export interface OptionsCategory {
   options: OptionWithCategoryAndDescription[];
 }
 
-type OptionCategories = Map<string, OptionsCategory>;
+export type OptionCategories = Map<string, OptionsCategory>;
 
-interface DefaultOption {
+export interface DefaultOption {
   type: string;
   description: string;
   value: unknown;
   defaultValue: unknown;
 }
 
-type DefaultOptionValue = string | number | boolean | undefined | object | unknown[];
+export type DefaultOptionValue = string | number | boolean | undefined | object | unknown[];
 
 export function isCommandLineOptionWithCategory(
   option: ts.CommandLineOption,
