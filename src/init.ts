@@ -54,7 +54,7 @@ export function init(options: InitOptions = {}): string {
 
   writeFileSync(filePath, output);
 
-  return '';
+  return filePath;
 }
 
 export function getOptionGroupedByCategory(): OptionCategories {
